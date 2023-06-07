@@ -13,8 +13,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/', notesController.getAllNotes);
+app.post('/', notesController.createNote);
+app.delete('/:id', notesController.deleteNote);
 
-app.post('/', notesController.createNote)
 app.listen(8081, () => {
     console.log("listening on port 8081");
 })
