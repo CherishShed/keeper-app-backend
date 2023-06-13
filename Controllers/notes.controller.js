@@ -7,14 +7,19 @@ const fs = require('fs');
 
 const notesController = {
     getAllNotes: async (req, res) => {
-        Notes.find({})
-            .then((notes, err) => {
-                if (err) {
-                    res.json({ error: err, status: "error" });
-                } else {
-                    res.json({ data: notes, status: "success" });
-                }
-            })
+        const test = false;
+        if (test) {
+            res.json({ status: "noAuth", redirect: "/footer" })
+        } else {
+            Notes.find({})
+                .then((notes, err) => {
+                    if (err) {
+                        res.json({ error: err, status: "error" });
+                    } else {
+                        res.json({ data: notes, status: "success" });
+                    }
+                })
+        }
     },
     createNote: async (req, res) => {
         const { title, content } = req.body;
@@ -33,7 +38,7 @@ const notesController = {
     deleteNote: async (req, res) => {
         Notes.findByIdAndDelete(req.params.id)
             .then((result, error) => {
-                console.log(result);
+                // console.log(result);
                 if (error) {
                     res.json({ error, status: "error" })
                 } else {
