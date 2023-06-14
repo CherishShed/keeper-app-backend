@@ -1,29 +1,29 @@
 require("dotenv").config();
 const database = require("../model/database.model");
-const { User, Notes } = database
+const { Notes, User } = database
 const fs = require('fs');
 // const cheerio = require("cheerio");
 
 
 const userController = {
-    getAllNotes: async (req, res) => {
+    getUserdetails: async (req, res) => {
         const test = false;
         if (test) {
             res.json({ status: "noAuth", redirect: "/footer" })
         } else {
-            Notes.find({})
-                .then((notes, err) => {
+            User.findOne({})
+                .then((user, err) => {
                     if (err) {
                         res.json({ error: err, status: "error" });
                     } else {
-                        res.json({ data: notes, status: "success" });
+                        res.json({ data: user, status: "success" });
                     }
                 })
         }
     },
-    createNote: async (req, res) => {
+    createLabel: async (req, res) => {
         const { title, content } = req.body;
-        const newNote = new Notes({
+        const newNote = new User({
             title, content
         })
         newNote.save()
@@ -35,14 +35,26 @@ const userController = {
                 }
             });
     },
-    deleteNote: async (req, res) => {
-        Notes.findByIdAndDelete(req.params.id)
+    deleteLabel: async (req, res) => {
+        User.findByIdAndDelete(req.params.id)
             .then((result, error) => {
                 // console.log(result);
                 if (error) {
                     res.json({ error, status: "error" })
                 } else {
                     res.json({ data: result, status: "success" })
+                }
+            });
+    },
+    getLabelDetails: async (req, res) => {
+        User.findOne({})
+            .then((result, error) => {
+                // console.log(result);
+                if (error) {
+                    res.json({ error, status: "error" })
+                } else {
+                    const foundLabel = result.labels.filter(labels => labels._id == req.params.id);
+                    res.json({ data: foundLabel[0], status: "success" })
                 }
             });
     }

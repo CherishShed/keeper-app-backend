@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const db = require("./model/database.model");
 const notesController = require('./Controllers/notes.controller');
+const userController = require('./Controllers/user.controller');
 var corsOptions = {
     origin: "*"
 }
@@ -14,6 +15,7 @@ app.use(express.json());
 app.get("/me", (req, res) => {
     res.redirect("/footer");
 })
+app.get("/api/getUser", userController.getUserdetails);
 app.get('/api', notesController.getAllNotes);
 app.post('/api', notesController.createNote);
 app.delete('/api/:id', notesController.deleteNote);
