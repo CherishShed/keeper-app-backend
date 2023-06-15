@@ -9,7 +9,7 @@ const notesController = {
     getAllNotes: async (req, res) => {
         const test = false;
         if (test) {
-            res.json({ status: "noAuth", redirect: "/footer" })
+            res.json({ status: "noAuth", redirect: "/login" })
         } else {
             Notes.find({})
                 .then((notes, err) => {
