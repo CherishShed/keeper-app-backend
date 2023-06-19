@@ -21,7 +21,7 @@ app.get("/me", (req, res) => {
 })
 app.get("/api/getUser", userController.getUserdetails);
 app.get('/api', notesController.getAllNotes);
-app.post('/api', notesController.createNote);
+app.post('/api', passport.authenticate("jwt", { session: false }), notesController.createNote);
 app.delete('/api/:id', notesController.deleteNote);
 
 

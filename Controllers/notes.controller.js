@@ -31,6 +31,11 @@ const notesController = {
                 if (error) {
                     res.json({ error, status: "error" })
                 } else {
+                    User.findById(req.user._id)
+                        .then((user) => {
+                            user.notes.push(result._id);
+                            user.save();
+                        })
                     res.json({ data: result, status: "success" })
                 }
             });
