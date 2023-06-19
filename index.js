@@ -40,14 +40,15 @@ app.post("/register", async (req, res) => {
 })
 
 app.post("/login", async (req, res) => {
+    console.log("heree")
     User.findOne({ username: req.body.username })
         .then((user) => {
             console.log(user)
             if (!user) {
-                return res.status(401).send({ success: false, message: "User not found" })
+                return res.send({ success: false, message: "User not found" })
             }
             if (!(req.body.password === user.password)) {
-                return res.status(401).send({ success: false, message: "Incorrect Password" })
+                return res.send({ success: false, message: "Incorrect Password" })
             }
             const payload = {
                 username: user.username, id: user._id
