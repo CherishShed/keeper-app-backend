@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
     lastName: { type: String, default: "" },
     notes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "notes"
+        ref: "note"
     }],
     profilePic: { type: String, default: "" },
     labels:
@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
             value: {
                 type: [{
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: "notes",
+                    ref: "note",
                     default: []
                 }]
             }

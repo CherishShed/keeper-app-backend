@@ -8,7 +8,7 @@ const opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.SECRET;
 passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-    User.findById(jwt_payload.id)
+    User.findById(jwt_payload.id).populate("notes")
         .then((user, err) => {
             if (err) {
                 return done(err, false);
