@@ -38,7 +38,28 @@ const userSchema = new mongoose.Schema({
 
 userSchema.set("toJSON", { virtuals: true });
 userSchema.plugin(passportLocalMongoose);
+notesSchema.post('findOneAndDelete', async function (note) {
+    try {
+        // Update the userSchema table
+        await mongoose.model('User').updateMany(
+            {
+                $or: [
+                    { notes: note._id },
+                    { 'labels.value': note._id }
+                ]
+            },
+            {
+                $pull: {
+                    notes: note._id,
+                    'labels.$[].value': note._id
+                }
+            }
+        );
+    } catch (err) {
+        console.error(err);
+    }
+});
 
-const Notes = mongoose.model("note", notesSchema)
 const User = mongoose.model("user", userSchema);
+const Notes = mongoose.model("note", notesSchema)
 module.exports = { User, Notes };
