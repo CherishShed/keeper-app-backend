@@ -33,10 +33,10 @@ app.post("/register", async (req, res) => {
     })
     user.save()
         .then((user) => {
-            res.send({ success: true, user: { id: user._id, username: user.username } });
+            res.send({ success: true, user: { id: user._id, username: user.username }, message: "Registration successful, Proceed to Login Page" });
         })
         .catch((error) => {
-            res.send({ success: false, error })
+            res.send({ success: false, error, message: "Error Occured" })
         })
 })
 
