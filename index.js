@@ -23,6 +23,7 @@ app.get("/api/getUser", userController.getUserdetails);
 app.get('/api', notesController.getAllNotes);
 app.post('/api', passport.authenticate("jwt", { session: false }), notesController.createNote);
 app.delete('/api/:id', notesController.deleteNote);
+app.get('/api/label/:key', passport.authenticate("jwt", { session: false }), userController.getLabelDetails)
 
 
 app.post("/register", async (req, res) => {
@@ -58,20 +59,7 @@ app.post("/login", async (req, res) => {
         })
 })
 
-app.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
-    const user = req.user;
-    return res.status(200).send({
-        success: true,
-        user: {
-            id: user._id,
-            username: user.username,
-            firstName: user.firstName,
-            notes: user.notes,
-            profilePic: user.profilePic,
-            labels: user.labels
-        }
-    })
-})
+app.get("/", passport.authenticate("jwt", { session: false }), userController.getUserdetails)
 
 app.listen(8081, () => {
     console.log("listening on port 8081");

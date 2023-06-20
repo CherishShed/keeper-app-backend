@@ -7,19 +7,18 @@ const fs = require('fs');
 
 const userController = {
     getUserdetails: async (req, res) => {
-        const test = false;
-        if (test) {
-            res.json({ status: "noAuth", redirect: "/footer" })
-        } else {
-            User.findOne({})
-                .then((user, err) => {
-                    if (err) {
-                        res.json({ error: err, status: "error" });
-                    } else {
-                        res.json({ data: user, status: "success" });
-                    }
-                })
-        }
+        const user = req.user;
+        res.json({
+            success: true,
+            user: {
+                id: user._id,
+                username: user.username,
+                firstName: user.firstName,
+                notes: user.notes,
+                profilePic: user.profilePic,
+                labels: user.labels
+            }
+        })
     },
     createLabel: async (req, res) => {
         const { title, content } = req.body;
@@ -47,13 +46,15 @@ const userController = {
             });
     },
     getLabelDetails: async (req, res) => {
-        User.findOne({})
+        console.log("in here")
+        // console.log(req.user._id)
+        User.findById(req.user._id).populate("labels.value")
             .then((result, error) => {
-                // console.log(result);
                 if (error) {
                     res.json({ error, status: "error" })
                 } else {
-                    const foundLabel = result.labels.filter(labels => labels._id == req.params.id);
+                    const foundLabel = result.labels.filter(labels => labels.key == req.params.key);
+                    console.log(foundLabel);
                     res.json({ data: foundLabel[0], status: "success" })
                 }
             });
