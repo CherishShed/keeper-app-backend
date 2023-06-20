@@ -48,7 +48,7 @@ app.post("/login", async (req, res) => {
             if (!user) {
                 return res.send({ success: false, message: "User not found" })
             }
-            if (!(req.body.password === user.password)) {
+            if (!(compareSync(req.body.password, user.password))) {
                 return res.send({ success: false, message: "Incorrect Password" })
             }
             const payload = {
