@@ -14,6 +14,7 @@ const userController = {
                 id: user._id,
                 username: user.username,
                 firstName: user.firstName,
+                lastName: user.lastName,
                 notes: user.notes,
                 profilePic: user.profilePic,
                 labels: user.labels
