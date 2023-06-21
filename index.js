@@ -8,6 +8,8 @@ const notesController = require('./Controllers/notes.controller');
 const userController = require('./Controllers/user.controller');
 const { hashSync, compareSync } = require("bcrypt")
 const passport = require("./middleware/auth.middleware");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 const jwt = require("jsonwebtoken")
 var corsOptions = {
     origin: "*"
@@ -24,6 +26,7 @@ app.post('/api', passport.authenticate("jwt", { session: false }), notesControll
 app.delete('/api/:id', notesController.deleteNote);
 app.get('/api/label/:key', passport.authenticate("jwt", { session: false }), userController.getLabelDetails)
 
+app.post("/userDetails", passport.authenticate("jwt", { session: false }), upload.single('profilePic'), userController.editOriginalProfileDetails);
 
 app.post("/register", async (req, res) => {
     const user = new User({
