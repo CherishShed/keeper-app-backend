@@ -75,15 +75,15 @@ const userController = {
         profilePic = profilePic.toString("base64");
         User.findByIdAndUpdate(req.user._id, { $set: { profilePic: profilePic, firstName: toTitleCase(req.body.firstName), lastName: toTitleCase(req.body.lastName) } })
             .then((result) => {
-                console.log("done");
                 if (req.file) {
                     if (fs.existsSync(req.file.path)) {
                         fs.unlink(req.file.path, (err) => {
+                            console.log("removed");
                             if (err) throw err;
                         });
                     }
-                    res.json({ data: result, success: true, message: "Succesful" })
                 }
+                res.json({ data: result, success: true, message: "Succesful" })
             })
             .catch(error => {
                 res.json({ error, success: false, message: "Error Occured" });
