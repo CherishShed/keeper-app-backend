@@ -38,7 +38,6 @@ const userController = {
     deleteLabel: async (req, res) => {
         User.findByIdAndDelete(req.params.id)
             .then((result, error) => {
-                // console.log(result);
                 if (error) {
                     res.json({ error, status: "error" })
                 } else {
@@ -47,15 +46,13 @@ const userController = {
             });
     },
     getLabelDetails: async (req, res) => {
-        console.log("in here")
-        // console.log(req.user._id)
+
         User.findById(req.user._id).populate("labels.value")
             .then((result, error) => {
                 if (error) {
                     res.json({ error, status: "error" })
                 } else {
                     const foundLabel = result.labels.filter(labels => labels.key == req.params.key);
-                    console.log(foundLabel);
                     res.json({ data: foundLabel[0], status: "success" })
                 }
             });
@@ -63,8 +60,6 @@ const userController = {
 
     editOriginalProfileDetails: async (req, res) => {
         if (req.file) {
-            console.log("uploaded");
-            console.log(req.file);
             var profilePic = fs.readFileSync(req.file.path);
         }
         else {
@@ -78,7 +73,6 @@ const userController = {
                 if (req.file) {
                     if (fs.existsSync(req.file.path)) {
                         fs.unlink(req.file.path, (err) => {
-                            console.log("removed");
                             if (err) throw err;
                         });
                     }
