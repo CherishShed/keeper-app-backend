@@ -29,6 +29,7 @@ app.post("/register", userController.registerUser)
 app.post("/login", userController.loginUser)
 
 app.get("/", passport.authenticate("jwt", { session: false }), userController.getUserdetails)
+app.post("/newLabel", passport.authenticate("jwt",{session:false}), userController.createLabel);
 
 app.listen(8081, () => {
     console.log("listening on port 8081");

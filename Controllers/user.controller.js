@@ -53,18 +53,19 @@ const userController = {
         })
     },
     createLabel: async (req, res) => {
-        const { title, content } = req.body;
-        const newNote = new User({
-            title, content
+        const { key } = req.body;
+        User.findById(req.user._id)
+        .then((user, err) => {
+            if(err) {
+                res.json({ error:err, status: "error" })
+            }
+            user.labels.push({ key: key, value: []});
+            user.save();
+            res.json({ data: user.labels, status: "success" })
         })
-        newNote.save()
-            .then((result, error) => {
-                if (error) {
-                    res.json({ error, status: "error" })
-                } else {
-                    res.json({ data: result, status: "success" })
-                }
-            });
+        .catch((err) => {
+            res.json({ error:err, status: "error" })
+        })
     },
     deleteLabel: async (req, res) => {
         User.findByIdAndDelete(req.params.id)
