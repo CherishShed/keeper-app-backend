@@ -57,14 +57,14 @@ const userController = {
         User.findById(req.user._id)
         .then((user, err) => {
             if(err) {
-                res.json({ error:err, status: "error" })
+                res.status(400).json({ error:err, status: "error" })
             }
             user.labels.push({ key: key, value: []});
             user.save();
-            res.json({ data: user.labels, status: "success" })
+            res.status(200).json({ data: user.labels, status: "success" })
         })
         .catch((err) => {
-            res.json({ error:err, status: "error" })
+            res.status(400).json({ error:err, status: "error" })
         })
     },
     deleteLabel: async (req, res) => {
