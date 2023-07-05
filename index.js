@@ -2,15 +2,11 @@ const express = require('express');
 require("dotenv");
 const app = express();
 const cors = require('cors');
-const mongoose = require('mongoose');
-const { User, Notes } = require("./model/database.model");
 const notesController = require('./Controllers/notes.controller');
 const userController = require('./Controllers/user.controller');
-const { hashSync, compareSync } = require("bcrypt")
 const passport = require("./middleware/auth.middleware");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
-const jwt = require("jsonwebtoken")
 var corsOptions = {
     origin: "*"
 }

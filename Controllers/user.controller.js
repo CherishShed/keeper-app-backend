@@ -2,6 +2,8 @@ require("dotenv").config();
 const database = require("../model/database.model");
 const { Notes, User } = database
 const fs = require('fs');
+const { hashSync, compareSync } = require("bcrypt");
+const jwt = require("jsonwebtoken");
 // const cheerio = require("cheerio");
 
 
