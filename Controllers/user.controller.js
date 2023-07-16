@@ -2,10 +2,41 @@ require("dotenv").config();
 const database = require("../model/database.model");
 const { Notes, User } = database
 const fs = require('fs');
+const { hashSync, compareSync } = require("bcrypt");
+const jwt = require("jsonwebtoken");
 // const cheerio = require("cheerio");
 
 
 const userController = {
+    registerUser:async (req, res) => {
+        const user = new User({
+            username: req.body.username,
+            password: hashSync(req.body.password, 10)
+        })
+        user.save()
+            .then((user) => {
+                res.send({ success: true, user: { id: user._id, username: user.username }, message: "Registration successful, Proceed to Login Page" });
+            })
+            .catch((error) => {
+                res.send({ success: false, error, message: "Error Occured" })
+            })
+    },
+    loginUser:async (req, res) => {
+        User.findOne({ username: req.body.username })
+            .then((user) => {
+                if (!user) {
+                    return res.send({ success: false, message: "User not found" })
+                }
+                if (!(compareSync(req.body.password, user.password))) {
+                    return res.send({ success: false, message: "Incorrect Password" })
+                }
+                const payload = {
+                    username: user.username, id: user._id
+                }
+                const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "1d" });
+                res.status(200).send({ success: true, message: "Login Success", token: "Bearer " + token });
+            })
+    },
     getUserdetails: async (req, res) => {
         const user = req.user;
         res.json({
@@ -22,18 +53,19 @@ const userController = {
         })
     },
     createLabel: async (req, res) => {
-        const { title, content } = req.body;
-        const newNote = new User({
-            title, content
+        const { key } = req.body;
+        User.findById(req.user._id)
+        .then((user, err) => {
+            if(err) {
+                res.status(400).json({ error:err, status: "error" })
+            }
+            user.labels.push({ key: key, value: []});
+            user.save();
+            res.status(200).json({ data: user.labels, status: "success" })
         })
-        newNote.save()
-            .then((result, error) => {
-                if (error) {
-                    res.json({ error, status: "error" })
-                } else {
-                    res.json({ data: result, status: "success" })
-                }
-            });
+        .catch((err) => {
+            res.status(400).json({ error:err, status: "error" })
+        })
     },
     deleteLabel: async (req, res) => {
         User.findByIdAndDelete(req.params.id)

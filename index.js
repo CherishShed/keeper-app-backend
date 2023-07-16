@@ -2,15 +2,11 @@ const express = require('express');
 require("dotenv");
 const app = express();
 const cors = require('cors');
-const mongoose = require('mongoose');
-const { User, Notes } = require("./model/database.model");
 const notesController = require('./Controllers/notes.controller');
 const userController = require('./Controllers/user.controller');
-const { hashSync, compareSync } = require("bcrypt")
 const passport = require("./middleware/auth.middleware");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
-const jwt = require("jsonwebtoken")
 var corsOptions = {
     origin: "*"
 }
@@ -28,40 +24,12 @@ app.get('/api/label/:key', passport.authenticate("jwt", { session: false }), use
 
 app.post("/userDetails", passport.authenticate("jwt", { session: false }), upload.single('profilePic'), userController.editOriginalProfileDetails);
 
-app.post("/register", async (req, res) => {
-    const user = new User({
-        username: req.body.username,
-        password: hashSync(req.body.password, 10)
-    })
-    user.save()
-        .then((user) => {
-            res.send({ success: true, user: { id: user._id, username: user.username }, message: "Registration successful, Proceed to Login Page" });
-        })
-        .catch((error) => {
-            res.send({ success: false, error, message: "Error Occured" })
-        })
-})
+app.post("/register", userController.registerUser)
 
-app.post("/login", async (req, res) => {
-    console.log("heree")
-    User.findOne({ username: req.body.username })
-        .then((user) => {
-            console.log(user)
-            if (!user) {
-                return res.send({ success: false, message: "User not found" })
-            }
-            if (!(compareSync(req.body.password, user.password))) {
-                return res.send({ success: false, message: "Incorrect Password" })
-            }
-            const payload = {
-                username: user.username, id: user._id
-            }
-            const token = jwt.sign(payload, process.env.SECRET, { expiresIn: "1d" });
-            res.status(200).send({ success: true, message: "Login Success", token: "Bearer " + token });
-        })
-})
+app.post("/login", userController.loginUser)
 
 app.get("/", passport.authenticate("jwt", { session: false }), userController.getUserdetails)
+app.post("/newLabel", passport.authenticate("jwt",{session:false}), userController.createLabel);
 
 app.listen(8081, () => {
     console.log("listening on port 8081");
