@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 
 
 const userController = {
-    registerUser:async (req, res) => {
+    registerUser: async (req, res) => {
         const user = new User({
             username: req.body.username,
             password: hashSync(req.body.password, 10)
@@ -21,7 +21,7 @@ const userController = {
                 res.send({ success: false, error, message: "Error Occured" })
             })
     },
-    loginUser:async (req, res) => {
+    loginUser: async (req, res) => {
         User.findOne({ username: req.body.username })
             .then((user) => {
                 if (!user) {
@@ -55,17 +55,36 @@ const userController = {
     createLabel: async (req, res) => {
         const { key } = req.body;
         User.findById(req.user._id)
-        .then((user, err) => {
-            if(err) {
-                res.status(400).json({ error:err, status: "error" })
-            }
-            user.labels.push({ key: key, value: []});
-            user.save();
-            res.status(200).json({ data: user.labels, status: "success" })
-        })
-        .catch((err) => {
-            res.status(400).json({ error:err, status: "error" })
-        })
+            .then((user, err) => {
+                if (err) {
+                    res.status(400).json({ error: err, status: "error" })
+                }
+                user.labels.push({ key: key, value: [] });
+                user.save();
+                res.status(200).json({ data: user.labels, status: "success" })
+            })
+            .catch((err) => {
+                res.status(400).json({ error: err, status: "error" })
+            })
+    },
+    editLabel: async (req, res) => {
+        const { oldKey, newKey } = req.body;
+        User.findById(req.user._id)
+            .then((user, err) => {
+                if (err) {
+                    res.status(400).json({ error: err, status: "error" })
+                }
+                for (i of user.labels) {
+                    if (i.key == oldKey) {
+                        i.key = newKey;
+                    }
+                }
+                user.save();
+                res.status(200).json({ data: user.labels, status: "success" })
+            })
+            .catch((err) => {
+                res.status(400).json({ error: err, status: "error" })
+            })
     },
     deleteLabel: async (req, res) => {
         User.findByIdAndDelete(req.params.id)
