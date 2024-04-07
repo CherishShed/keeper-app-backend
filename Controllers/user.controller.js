@@ -87,14 +87,21 @@ const userController = {
             })
     },
     deleteLabel: async (req, res) => {
-        User.findByIdAndDelete(req.params.id)
-            .then((result, error) => {
+        const { id } = req.query;
+        User.findById(req.user.id)
+            .then((user, error) => {
                 if (error) {
                     res.json({ error, status: "error" })
                 } else {
-                    res.json({ data: result, status: "success" })
+                    user.labels = user.labels.filter(label => label.id != id)
+                    user.save();
+                    res.status(200).json({ data: user.labels, status: "success" })
                 }
-            });
+            }).catch(err => {
+                res.status(500).json({ error: err, status: "error" })
+
+            })
+
     },
     getLabelDetails: async (req, res) => {
 
