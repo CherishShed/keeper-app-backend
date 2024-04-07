@@ -1,9 +1,26 @@
 require("dotenv").config();
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
-
-mongoose.connect("mongodb://127.0.0.1:27017/notesDB");
-
+mongoose.set('strictQuery', true)
+const connectToDatabase = async () => {
+    mongoose
+        .connect(process.env.CONNECTION_STRING, {
+            dbName: 'notesDB',
+            connectTimeoutMS: 40000,
+        })
+        .then(() => {
+            console.log('Database Connection Succeeded')
+        })
+        .catch(err => {
+            console.log(`An error occurred connecting to database: ${err}`)
+        })
+}
+mongoose.connection.on('error', err => {
+    console.log(
+        `An error occurred connecting to database: ${err},\n...reconnecting`
+    )
+    connectToDatabase()
+})
 const notesSchema = new mongoose.Schema({
     title: String,
     content: String
@@ -63,4 +80,4 @@ notesSchema.post('findOneAndDelete', async function (note) {
 });
 
 const Notes = mongoose.model("note", notesSchema)
-module.exports = { User, Notes };
+module.exports = { User, Notes, connectToDatabase };

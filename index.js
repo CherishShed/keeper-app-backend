@@ -6,6 +6,7 @@ const notesController = require('./Controllers/notes.controller');
 const userController = require('./Controllers/user.controller');
 const passport = require("./middleware/auth.middleware");
 const multer = require("multer");
+const { connectToDatabase } = require('./model/database.model');
 const upload = multer({ dest: "uploads/" });
 var corsOptions = {
     origin: "*"
@@ -33,5 +34,6 @@ app.post("/newLabel", passport.authenticate("jwt", { session: false }), userCont
 app.patch("/editLabel", passport.authenticate("jwt", { session: false }), userController.editLabel);
 app.delete("/deleteLabel", passport.authenticate("jwt", { session: false }), userController.deleteLabel);
 app.listen(8081, () => {
+    connectToDatabase()
     console.log("listening on port 8081");
 })
