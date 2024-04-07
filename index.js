@@ -23,7 +23,7 @@ app.post('/api', passport.authenticate("jwt", { session: false }), notesControll
 app.delete('/api/:id', notesController.deleteNote);
 app.get('/api/label/:key', passport.authenticate("jwt", { session: false }), userController.getLabelDetails)
 
-app.post("/userDetails", passport.authenticate("jwt", { session: false }), upload.single('profilePic'), userController.editOriginalProfileDetails);
+app.post("/userDetails", passport.authenticate("jwt", { session: false }), userController.editOriginalProfileDetails);
 
 app.post("/register", userController.registerUser)
 

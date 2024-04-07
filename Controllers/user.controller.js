@@ -117,24 +117,11 @@ const userController = {
     },
 
     editOriginalProfileDetails: async (req, res) => {
-        if (req.file) {
-            var profilePic = fs.readFileSync(req.file.path);
-        }
-        else {
-            var profilePic = fs.readFileSync("avatar.png");
 
-        }
         // cosnole.log(req.user._id);
         profilePic = profilePic.toString("base64");
         User.findByIdAndUpdate(req.user._id, { $set: { profilePic: profilePic, firstName: toTitleCase(req.body.firstName), lastName: toTitleCase(req.body.lastName) } })
             .then((result) => {
-                if (req.file) {
-                    if (fs.existsSync(req.file.path)) {
-                        fs.unlink(req.file.path, (err) => {
-                            if (err) throw err;
-                        });
-                    }
-                }
                 res.json({ data: result, success: true, message: "Succesful" })
             })
             .catch(error => {
