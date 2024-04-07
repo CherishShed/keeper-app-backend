@@ -5,9 +5,7 @@ const cors = require('cors');
 const notesController = require('./Controllers/notes.controller');
 const userController = require('./Controllers/user.controller');
 const passport = require("./middleware/auth.middleware");
-const multer = require("multer");
 const { connectToDatabase } = require('./model/database.model');
-const upload = multer({ dest: "uploads/" });
 var corsOptions = {
     origin: "*"
 }
