@@ -31,7 +31,12 @@ app.get("/", passport.authenticate("jwt", { session: false }), userController.ge
 app.post("/newLabel", passport.authenticate("jwt", { session: false }), userController.createLabel);
 app.patch("/editLabel", passport.authenticate("jwt", { session: false }), userController.editLabel);
 app.delete("/deleteLabel", passport.authenticate("jwt", { session: false }), userController.deleteLabel);
-app.listen(8081, () => {
-    connectToDatabase()
-    console.log("listening on port 8081");
-})
+
+const startServer = async () => {
+    await connectToDatabase()
+    app.listen(8081, () => {
+        console.log('listening on 8081')
+    })
+}
+
+startServer()
